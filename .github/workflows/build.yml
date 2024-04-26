@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.branch }}
-          repository: uPtt/backend
+          repository: uPtt-messenger/backend
           path: backend
 
       - name: Set up Python
