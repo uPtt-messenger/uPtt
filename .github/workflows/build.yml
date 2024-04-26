@@ -63,8 +63,8 @@ jobs:
         if: ${{ matrix.os }} == 'macos-latest'
         run: |
           cp -r installer/uPtt.app .
-          cp -r backend/build/uptt_backend.dist/* installer/uPtt.app/Contents/MacOS
-          cp -r backend/build/uptt_mq_server.dist/* installer/uPtt.app/Contents/MacOS
+          cp -r backend/build/uptt_backend.dist/* uPtt.app/Contents/MacOS
+          cp -r backend/build/uptt_mq_server.dist/* uPtt.app/Contents/MacOS
           ls -lR uPtt.app
           zip -r uPtt.zip uPtt.app
 
