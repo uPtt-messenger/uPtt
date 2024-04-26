@@ -67,10 +67,13 @@ jobs:
           
           cp -r backend/build/uptt_backend.dist/* installer/uPtt.app/Contents/MacOS
           cp -r backend/build/uptt_mq_server.dist/* installer/uPtt.app/Contents/MacOS
+          
+          # compress the app
+          zip -r uPtt.zip uPtt.app
 
       - name: Upload artifact
         if: ${{ matrix.os }} == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
           name: uPtt
-          path: uPtt.app
+          path: uPtt.zip
