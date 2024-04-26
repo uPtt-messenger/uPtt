@@ -36,7 +36,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Cache backend build
+        uses: actions/cache@v4
+        id: cache-backend-build
+        with:
+          path: backend/build
+          key: ${{ runner.os }}-backend-build-${{ github.event.inputs.branch }}-${{ hashFiles('backend/**') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-build-
+
       - name: Generate requirements.txt
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
         working-directory: backend
         run: |
           python -m pip install --upgrade pip
@@ -44,6 +54,7 @@ jobs:
           poetry export -f requirements.txt --output requirements.txt
 
       - name: Install dependencies
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
         working-directory: backend
         run: |
           python -m pip install --upgrade pip
@@ -51,6 +62,7 @@ jobs:
           pip install Nuitka
 
       - name: Build backend
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
         working-directory: backend
         run: |
           if [ ${{ matrix.os }} == 'macos-latest' ]; then

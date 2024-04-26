@@ -52,117 +52,6 @@
 				<dict>
 					<key>source</key>
 					<string>on run {input, parameters}
-    tell application "System Events"
-        tell process "Automator"
-            set visible to true
-        end tell
-    end tell
-    return input
-end run</string>
-				</dict>
-				<key>BundleIdentifier</key>
-				<string>com.apple.Automator.RunScript</string>
-				<key>CFBundleVersion</key>
-				<string>1.0.2</string>
-				<key>CanShowSelectedItemsWhenRun</key>
-				<false/>
-				<key>CanShowWhenRun</key>
-				<true/>
-				<key>Category</key>
-				<array>
-					<string>AMCategoryUtilities</string>
-				</array>
-				<key>Class Name</key>
-				<string>RunScriptAction</string>
-				<key>InputUUID</key>
-				<string>02DFDD2D-E892-4131-9DB6-69074737C6E7</string>
-				<key>Keywords</key>
-				<array>
-					<string>Run</string>
-				</array>
-				<key>OutputUUID</key>
-				<string>F526F640-F2C5-4446-9102-0AE1315E7B09</string>
-				<key>UUID</key>
-				<string>119CFB71-E780-4D25-8BB1-144665051A72</string>
-				<key>UnlocalizedApplications</key>
-				<array>
-					<string>Automator</string>
-				</array>
-				<key>arguments</key>
-				<dict>
-					<key>0</key>
-					<dict>
-						<key>default value</key>
-						<string>on run {input, parameters}
-	
-	(* Your script goes here *)
-	
-	return input
-end run</string>
-						<key>name</key>
-						<string>source</string>
-						<key>required</key>
-						<string>0</string>
-						<key>type</key>
-						<string>0</string>
-						<key>uuid</key>
-						<string>0</string>
-					</dict>
-				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
-				<key>isViewVisible</key>
-				<integer>1</integer>
-				<key>location</key>
-				<string>345.000000:315.000000</string>
-				<key>nibPath</key>
-				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/Base.lproj/main.nib</string>
-			</dict>
-			<key>isViewVisible</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>action</key>
-			<dict>
-				<key>AMAccepts</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Optional</key>
-					<true/>
-					<key>Types</key>
-					<array>
-						<string>com.apple.applescript.object</string>
-					</array>
-				</dict>
-				<key>AMActionVersion</key>
-				<string>1.0.2</string>
-				<key>AMApplication</key>
-				<array>
-					<string>Automator</string>
-				</array>
-				<key>AMParameterProperties</key>
-				<dict>
-					<key>source</key>
-					<dict/>
-				</dict>
-				<key>AMProvides</key>
-				<dict>
-					<key>Container</key>
-					<string>List</string>
-					<key>Types</key>
-					<array>
-						<string>com.apple.applescript.object</string>
-					</array>
-				</dict>
-				<key>ActionBundlePath</key>
-				<string>/System/Library/Automator/Run AppleScript.action</string>
-				<key>ActionName</key>
-				<string>Run AppleScript</string>
-				<key>ActionParameters</key>
-				<dict>
-					<key>source</key>
-					<string>on run {input, parameters}
     set p to path to me
     return p
 end run</string>
@@ -182,17 +71,15 @@ end run</string>
 				<key>Class Name</key>
 				<string>RunScriptAction</string>
 				<key>InputUUID</key>
-				<string>7FA025C7-0C7C-4C95-AA4D-F1932207D16F</string>
+				<string>F1DDF298-2590-46D7-8F40-7B01CC145842</string>
 				<key>Keywords</key>
 				<array>
 					<string>Run</string>
 				</array>
 				<key>OutputUUID</key>
-				<string>8D08BF5E-8132-48C1-BF7F-684DA46F0505</string>
-				<key>ShowWhenRun</key>
-				<false/>
+				<string>38267173-4B92-4B91-AF26-12D7897F245B</string>
 				<key>UUID</key>
-				<string>4DFC274E-56E1-47CC-99C2-BDBE3EFDCAF4</string>
+				<string>CF28028D-BAFD-43A8-9A42-98FAC7449E09</string>
 				<key>UnlocalizedApplications</key>
 				<array>
 					<string>Automator</string>
@@ -223,7 +110,7 @@ end run</string>
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>345.000000:616.000000</string>
+				<string>407.500000:315.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -312,7 +199,7 @@ sleep 2
 				<key>Class Name</key>
 				<string>RunShellScriptAction</string>
 				<key>InputUUID</key>
-				<string>72690F2D-4F7B-40A1-B716-CA7172B721F0</string>
+				<string>D2B755CF-2AAD-4AF4-849C-A273641C78CA</string>
 				<key>Keywords</key>
 				<array>
 					<string>Shell</string>
@@ -322,11 +209,9 @@ sleep 2
 					<string>Unix</string>
 				</array>
 				<key>OutputUUID</key>
-				<string>2A60C2CB-EC2A-43AA-990A-83FEA49508F1</string>
-				<key>ShowWhenRun</key>
-				<false/>
+				<string>C73B87E4-DC56-4950-B642-350F182C30FF</string>
 				<key>UUID</key>
-				<string>3EBBC262-AE48-40BB-9D61-0E6D3480C698</string>
+				<string>1F2171F6-494F-4081-8463-9AD4076556FA</string>
 				<key>UnlocalizedApplications</key>
 				<array>
 					<string>Automator</string>
@@ -404,7 +289,7 @@ sleep 2
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>345.000000:1144.000000</string>
+				<string>407.500000:497.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -414,19 +299,12 @@ sleep 2
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>3AA5B638-63BC-4FF4-9039-301546C7343B</key>
+		<key>11569F8C-E315-4DE4-B5BA-E5B974DD8EA3</key>
 		<dict>
 			<key>from</key>
-			<string>4DFC274E-56E1-47CC-99C2-BDBE3EFDCAF4 - 4DFC274E-56E1-47CC-99C2-BDBE3EFDCAF4</string>
+			<string>CF28028D-BAFD-43A8-9A42-98FAC7449E09 - CF28028D-BAFD-43A8-9A42-98FAC7449E09</string>
 			<key>to</key>
-			<string>3EBBC262-AE48-40BB-9D61-0E6D3480C698 - 3EBBC262-AE48-40BB-9D61-0E6D3480C698</string>
-		</dict>
-		<key>E0828561-FDB9-420D-A37D-C625E4A8007B</key>
-		<dict>
-			<key>from</key>
-			<string>119CFB71-E780-4D25-8BB1-144665051A72 - 119CFB71-E780-4D25-8BB1-144665051A72</string>
-			<key>to</key>
-			<string>4DFC274E-56E1-47CC-99C2-BDBE3EFDCAF4 - 4DFC274E-56E1-47CC-99C2-BDBE3EFDCAF4</string>
+			<string>1F2171F6-494F-4081-8463-9AD4076556FA - 1F2171F6-494F-4081-8463-9AD4076556FA</string>
 		</dict>
 	</dict>
 	<key>workflowMetaData</key>
