@@ -24,6 +24,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.branch }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
           repository: uPtt/backend
           path: backend
 
@@ -55,14 +59,18 @@ jobs:
               ./build.bat build
           fi
 
-      - name: Build installer
+      - name: Build app
         if: ${{ matrix.os }} == 'macos-latest'
-        working-directory: backend
         run: |
-          # Create a bundle
-          mkdir -p uPtt.app/Contents/MacOS
-          cp -r build/uptt_backend.dist/* uPtt.app/Contents/MacOS
-          cp -r build/uptt_mq_server.dist/* uPtt.app/Contents/MacOS
           
-          cp 
+          cp -r installer/uPtt.app .
+          
+          cp -r backend/build/uptt_backend.dist/* installer/uPtt.app/Contents/MacOS
+          cp -r backend/build/uptt_mq_server.dist/* installer/uPtt.app/Contents/MacOS
 
+      - name: Upload artifact
+        if: ${{ matrix.os }} == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: uPtt
+          path: uPtt.app
