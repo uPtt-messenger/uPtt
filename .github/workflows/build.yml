@@ -65,6 +65,7 @@ jobs:
           cp -r installer/uPtt.app .
           cp -r backend/build/uptt_backend.dist/* installer/uPtt.app/Contents/MacOS
           cp -r backend/build/uptt_mq_server.dist/* installer/uPtt.app/Contents/MacOS
+          ls -lR uPtt.app
           zip -r uPtt.zip uPtt.app
 
       - name: Upload artifact
