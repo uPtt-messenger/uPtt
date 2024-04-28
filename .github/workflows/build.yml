@@ -65,37 +65,37 @@ jobs:
         run: |
           echo "test 2 false"
 
-#      - name: Set up Python
-#        if: steps.cache-backend-build.outputs.cache-hit != 'true'
-#        uses: actions/setup-python@v5
-#        with:
-#          python-version: ${{ matrix.python-version }}
-#
-#      - name: Generate requirements.txt
-#        if: steps.cache-backend-build.outputs.cache-hit != 'true'
-#        working-directory: backend
-#        run: |
-#          python -m pip install --upgrade pip
-#          pip install poetry poetry-plugin-export
-#          poetry export -f requirements.txt --output requirements.txt
-#
-#      - name: Install dependencies
-#        if: steps.cache-backend-build.outputs.cache-hit != 'true'
-#        working-directory: backend
-#        run: |
-#          python -m pip install --upgrade pip
-#          pip install -r requirements.txt
-#          pip install Nuitka
-#
-#      - name: Build backend
-#        if: steps.cache-backend-build.outputs.cache-hit != 'true'
-#        working-directory: backend
-#        run: |
-#          if [ ${{ matrix.os }} == 'macos-latest' ]; then
-#              ./build.sh build
-#          else
-#              ./build.bat build
-#          fi
+      - name: Set up Python
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Generate requirements.txt
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry poetry-plugin-export
+          poetry export -f requirements.txt --output requirements.txt
+
+      - name: Install dependencies
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install Nuitka
+
+      - name: Build backend
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
+        working-directory: backend
+        run: |
+          if [ ${{ matrix.os }} == 'macos-latest' ]; then
+              ./build.sh build
+          else
+              ./build.bat build
+          fi
 
       - name: Build app
         if: ${{ matrix.os }} == 'macos-latest'
