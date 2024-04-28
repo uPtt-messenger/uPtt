@@ -36,7 +36,7 @@ jobs:
         id: cache-backend-build
         with:
           path: backend/build
-          key: ${{ runner.os }}-backend-build-${{ hashFiles('src/*.py') }}-${{ hashFiles('poetry.lock') }}
+          key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/src/*.py') }}-${{ hashFiles('backend/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-backend-build-
 
