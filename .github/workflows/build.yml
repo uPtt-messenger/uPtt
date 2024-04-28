@@ -40,11 +40,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-backend-build-
 
-      - name: Show cache status
-        run: |
-          echo "Cache hit: ${{ steps.cache-backend-build.outputs.cache-hit }}"
-          ls -lR backend/build-packages
-
       - name: Set up Python
         if: steps.cache-backend-build.outputs.cache-hit != 'true'
         uses: actions/setup-python@v5
