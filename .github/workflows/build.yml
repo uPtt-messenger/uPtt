@@ -31,19 +31,20 @@ jobs:
           repository: uPtt-messenger/backend
           path: backend
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - name: Cache backend build
         uses: actions/cache@v4
         id: cache-backend-build
         with:
           path: backend/build
-          key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/**') }}
+          key: ${{ runner.os }}-backend-build-${{ hashFiles('src/*.py') }}-${{ hashFiles('poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-backend-build-
+
+      - name: Set up Python
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Generate requirements.txt
         if: steps.cache-backend-build.outputs.cache-hit != 'true'
