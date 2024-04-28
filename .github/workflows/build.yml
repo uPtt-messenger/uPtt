@@ -45,6 +45,26 @@ jobs:
           echo "Cache hit: ${{ steps.cache-backend-build.outputs.cache-hit }}"
           ls -lR backend/build-packages
 
+      - name: test 1 true
+        if: ${{ steps.cache-backend-build.outputs.cache-hit }} == 'true'
+        run: |
+          echo "test 1 true"
+
+      - name: test 1 false
+        if: ${{ steps.cache-backend-build.outputs.cache-hit }} != 'true'
+        run: |
+          echo "test 1 false"
+
+      - name: test 2 true
+        if: steps.cache-backend-build.outputs.cache-hit == 'true'
+        run: |
+          echo "test 2 true"
+
+      - name: test 2 false
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
+        run: |
+          echo "test 2 false"
+
 #      - name: Set up Python
 #        if: steps.cache-backend-build.outputs.cache-hit != 'true'
 #        uses: actions/setup-python@v5
