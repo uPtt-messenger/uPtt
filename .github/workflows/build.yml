@@ -28,15 +28,26 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.branch }}
-          repository: uPtt/backend
+          repository: uPtt-messenger/backend
           path: backend
 
+      - name: Cache backend build
+        uses: actions/cache@v4
+        id: cache-backend-build
+        with:
+          path: backend/build-packages
+          key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/src/*.py') }}-${{ hashFiles('backend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-build-
+
       - name: Set up Python
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Generate requirements.txt
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
         working-directory: backend
         run: |
           python -m pip install --upgrade pip
@@ -44,6 +55,7 @@ jobs:
           poetry export -f requirements.txt --output requirements.txt
 
       - name: Install dependencies
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
         working-directory: backend
         run: |
           python -m pip install --upgrade pip
@@ -51,6 +63,7 @@ jobs:
           pip install Nuitka
 
       - name: Build backend
+        if: steps.cache-backend-build.outputs.cache-hit != 'true'
         working-directory: backend
         run: |
           if [ ${{ matrix.os }} == 'macos-latest' ]; then
@@ -62,15 +75,14 @@ jobs:
       - name: Build app
         if: ${{ matrix.os }} == 'macos-latest'
         run: |
-          
           cp -r installer/uPtt.app .
-          
-          cp -r backend/build/uptt_backend.dist/* installer/uPtt.app/Contents/MacOS
-          cp -r backend/build/uptt_mq_server.dist/* installer/uPtt.app/Contents/MacOS
+          cp -r backend/build-packages/* uPtt.app/Contents/MacOS
+          ls -lR uPtt.app
+          zip -r uPtt.zip uPtt.app
 
       - name: Upload artifact
         if: ${{ matrix.os }} == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
           name: uPtt
-          path: uPtt.app
+          path: uPtt.zip
