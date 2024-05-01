@@ -17,7 +17,8 @@ _script_path = os.path.dirname(os.path.abspath(__file__))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx.ext.graphviz'
+    'sphinx.ext.graphviz',
+    'sphinx_sitemap'
 ]
 
 templates_path = ['_templates']
@@ -29,7 +30,13 @@ language = 'zh_TW'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'alabaster'
-html_static_path = ['_static']
+html_static_path = [
+    'CNAME',
+    'robots.txt',
+    '_static']
 
 # -- GraphViz configuration ----------------------------------
 graphviz_output_format = 'svg'
+
+# -- Options for LaTeX output ------------------------------------------------
+html_baseurl = 'https://uptt.cc/'
