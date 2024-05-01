@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>開發者文件 &#8212; uPtt  說明文件</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+    <script src="../_static/documentation_options.js?v=0d9984b1"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=1fe8cbde"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜尋" href="../search.html" />
+    <link rel="prev" title="uPtt - 為批踢踢打造的開源即時通訊軟體" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>開發者文件<a class="headerlink" href="#id1" title="連結到這個標頭">¶</a></h1>
+<p>這裡是 <a class="reference external" href="https://uptt.cc">uPtt</a> 的開發者文件，使用 <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> 產生。</p>
+<section id="id2">
+<h2>專案架構<a class="headerlink" href="#id2" title="連結到這個標頭">¶</a></h2>
+<div class="line-block">
+<div class="line">這個專案的架構設計旨在將系統模組化，以便易於維護和擴展。各個元件的功能和責任如下：</div>
+</div>
+<ul class="simple">
+<li><p>PTT backend: 負責處理與批踢踢伺服器的通訊，包括登入、獲取文章列表、發送文章等操作。</p></li>
+<li><p>MQ server: 提供消息佇列服務，用於元件之間的非同步通訊，實現解耦和增加系統的彈性。</p></li>
+<li><p>System tray: 顯示系統列圖示，提供用戶快速使用系統功能的表單。</p></li>
+<li><p>Chat window: 用戶之間的即時聊天界面。</p></li>
+<li><p>Login window: 用於用戶登入批踢踢帳號的界面。</p></li>
+</ul>
+<div class="line-block">
+<div class="line">這是目前的專案架構。</div>
+</div>
+<figure class="align-center" id="repo-structure">
+<div class="graphviz"><object data="../_images/graphviz-dfa7ebf4260501fcd11b76663b007c6580fde3ee.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">How Sphinx and GraphViz Render the Final Document</p></object></div>
+<figcaption>
+<p><span class="caption-text">專案架構</span><a class="headerlink" href="#repo-structure" title="連結到這個圖片">¶</a></p>
+</figcaption>
+</figure>
+<div class="line-block">
+<div class="line">未來希望可以朝這個方向前進。</div>
+</div>
+<figure class="align-center" id="new-repo-structure">
+<div class="graphviz"><object data="../_images/graphviz-2d6f11ad446fedb55a42adc840f581bdc7d4bca6.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">How Sphinx and GraphViz Render the Final Document</p></object></div>
+<figcaption>
+<p><span class="caption-text">未來專案架構</span><a class="headerlink" href="#new-repo-structure" title="連結到這個圖片">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="message-queue">
+<h2>Message queue<a class="headerlink" href="#message-queue" title="連結到這個標頭">¶</a></h2>
+<p>採用 Message queue 架構是為了實現元件之間的非同步通訊並帶來以下優勢：</p>
+<ul class="simple">
+<li><p>技術堆疊靈活：不同元件之間可以自由採用不同的技術堆疊，如程式語言、框架、資料庫等。</p></li>
+<li><p>方便替換：同一個功能的元件，可以由不同開發者各自開發，當目前採用的開發者無法持續開發時，可由熟悉不同技術的開發者開發功能相同的元件。</p></li>
+</ul>
+<figure class="align-center" id="message-queue-structure">
+<div class="graphviz"><object data="../_images/graphviz-d53f98a30125881bc53f33c14db9f53a96f69985.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph Architecture {
+    node [shape=box, style=rounded];
+
+    &quot;Message Queue&quot; [shape=rect, style=filled, width=6.5];
+
+    &quot;PTT backend&quot; -&gt; &quot;Message Queue&quot;;
+    &quot;MQ server&quot; -&gt; &quot;Message Queue&quot;;
+    &quot;system tray&quot; -&gt; &quot;Message Queue&quot;;
+    &quot;login window&quot; -&gt; &quot;Message Queue&quot;;
+    &quot;chat window&quot; -&gt; &quot;Message Queue&quot;;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">Message queue structure</span><a class="headerlink" href="#message-queue-structure" title="連結到這個圖片">¶</a></p>
+</figcaption>
+</figure>
+<p>所有元件之間都是透過 Message queue 來互相溝通的。</p>
+<section id="id3">
+<h3>發送訊息<a class="headerlink" href="#id3" title="連結到這個標頭">¶</a></h3>
+<div class="line-block">
+<div class="line">以下是發送訊息的示範程式。</div>
+<div class="line">先介紹一下發送訊息的基本格式。</div>
+<div class="line">必須要有 <cite>channel</cite> 你要把訊息發送給哪一個頻道，把你要打包的訊息放到 <cite>message</cite> 底下，記得也要放入怎麼回訊息給你的 <cite>reply_channel</cite>。</div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+    &quot;channel&quot;: &quot;the channel you want to send&quot;,
+    &quot;message&quot;: &quot;{ ... Your msg here ... &quot;reply_channel&quot;: &quot;the channel you can receive&quot;}&quot;
+}
+</pre></div>
+</div>
+<p>請注意，message 中的 json 訊息有被打包成字串的形式。</p>
+<p>接著就是發送訊息。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://127.0.0.1:16180//push/&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>接收訊息<a class="headerlink" href="#id4" title="連結到這個標頭">¶</a></h3>
+<div class="line-block">
+<div class="line">以下是收取訊息的示範程式。</div>
+<div class="line">其中 timeout 是 5 + 1 秒是因為 long polling 目前設定在 5 秒，所以 request timeout 時間才會設定在 5 + 1 秒。</div>
+<div class="line">而 Message queue server 有實作了 long polling 機制，所以元件的呼叫可以不用設置 sleep。</div>
+<div class="line">如果沒有訊息，就會等待 5 秒再回覆沒有訊息。</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;the channel you want to receive&quot;</span>
+<span class="p">}</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;http://127.0.0.1:16180/pull/&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>實際用來收信的程式碼你可以在 <a class="reference external" href="https://github.com/uPtt-messenger/backend/blob/develop/src/mq.py#L41-L62">receive_message_forever</a> 找到。</p>
+<p>那實際收到的訊息都會是以矩陣的形式並按照時間排序。</p>
+</section>
+</section>
+<section id="id5">
+<h2>程式碼流程<a class="headerlink" href="#id5" title="連結到這個標頭">¶</a></h2>
+<section id="id6">
+<h3>登入<a class="headerlink" href="#id6" title="連結到這個標頭">¶</a></h3>
+<p>這裡將描述登入溝通的過程。</p>
+<ol class="arabic simple">
+<li><p>使用者在 Login Window 輸入批踢踢帳號和密碼後，Login Window 將透過 Message queue server 發送登入訊息給 PTT backend，請求執行登入操作。</p></li>
+</ol>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;to_backend&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;category\&quot;: \&quot;login\&quot;, \&quot;username\&quot;: \&quot;PTT ID\&quot;, \&quot;password\&quot;: \&quot;PTT PW\&quot;, \&quot;reply_channel\&quot;: \&quot;to_ui\&quot;}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>PTT backend 收到登入訊息後，執行登入操作並將結果發送回 UI 元件，報告登入成功或失敗。</p></li>
+</ol>
+<p>以剛剛 PTT backend 收到的訊息為例，取得的登入訊息，應該會長這樣。</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;login&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PTT ID&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PTT PW&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reply_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;to_ui&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>執行登入之後，PTT backend 理當會回覆兩種訊息，登入成功與登入失敗。</p>
+<p>以下是登入成功的範例訊息。</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;login&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SUCCESS&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;login success&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reply_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;to_backend&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>以下是登入失敗的範例訊息。</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;login&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAILURE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wrong id or password&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;reply_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;to_backend&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>至此，整個登入流程就算完成了。</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">uPtt</a></h1>
+
+
+
+
+
+
+
+
+<h3>瀏覽</h3>
+<p class="caption" role="heading"><span class="caption-text">目錄</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">開發者指南</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">專案架構</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#message-queue">Message queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">程式碼流程</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="上一章">uPtt - 為批踢踢打造的開源即時通訊軟體</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜尋</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="前往" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, uPtt.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../_sources/developer_guide/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
