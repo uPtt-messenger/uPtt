@@ -30,10 +30,8 @@ language = 'zh_TW'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'alabaster'
-html_static_path = [
-    'CNAME',
-    'robots.txt',
-    '_static']
+html_static_path = ['_static']
+html_extra_path = ['CNAME', 'robots.txt']
 
 # -- GraphViz configuration ----------------------------------
 graphviz_output_format = 'svg'
