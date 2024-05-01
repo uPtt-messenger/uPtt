@@ -18,7 +18,7 @@ _script_path = os.path.dirname(os.path.abspath(__file__))
 
 extensions = [
     'sphinx.ext.graphviz',
-    'sphinx_sitemap'
+    'sphinx_sitemap',
 ]
 
 templates_path = ['_templates']
@@ -40,3 +40,4 @@ graphviz_output_format = 'svg'
 
 # -- Options for LaTeX output ------------------------------------------------
 html_baseurl = 'https://uptt.cc/'
+sitemap_url_scheme = "{link}"
