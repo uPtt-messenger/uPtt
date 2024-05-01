@@ -16,7 +16,9 @@ _script_path = os.path.dirname(os.path.abspath(__file__))
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.graphviz'
+]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -28,3 +30,6 @@ language = 'zh_TW'
 
 html_theme = 'alabaster'
 html_static_path = ['_static']
+
+# -- GraphViz configuration ----------------------------------
+graphviz_output_format = 'svg'

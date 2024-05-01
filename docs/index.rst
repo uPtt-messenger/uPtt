@@ -21,13 +21,8 @@ uPtt - 為批踢踢打造的開源即時通訊軟體
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: 目錄
+   :hidden:
 
+   開發者指南 <developer_guide/index>
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
