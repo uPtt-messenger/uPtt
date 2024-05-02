@@ -17,7 +17,10 @@
 * Chat window: 用戶之間的即時聊天界面。
 * Login window: 用於用戶登入批踢踢帳號的界面。
 
-| 這是目前的專案架構。
+| 這是目前的專案架構。五個元件分散在 frontend_ 和 backend_ 兩個 repo 中，但未來希望可以各自獨立成一個 repo 管理。
+
+.. _frontend: https://github.com/uPtt-messenger/frontend
+.. _backend: https://github.com/uPtt-messenger/backend
 
 .. graphviz::
     :name: repo structure
@@ -64,7 +67,7 @@
         login_window_ext -> login_window;
     }
 
-| 未來希望可以朝這個方向前進。
+| 未來希望可以朝每個元件都獨立管理的方向前進。
 
 .. graphviz::
     :name: new repo structure
@@ -127,7 +130,10 @@ Message queue
         "chat window" -> "Message Queue";
     }
 
-所有元件之間都是透過 Message queue 來互相溝通的。
+| 目前 Message queue server 是自行開發的簡單實作，使用了 FastAPI_ 作為 web framework。
+| 其中有實作了 long polling 機制，所以元件的 API 呼叫可以不用設置時間間隔。
+
+.. _FastAPI: https://fastapi.tiangolo.com/
 
 發送訊息
 ^^^^^^^^
@@ -169,7 +175,7 @@ Message queue
             json=params,
             timeout=5 + 1)
 
-實際用來收信的程式碼你可以在 receive_message_forever_ 找到。
+實際用來接收訊息的程式碼你可以在 receive_message_forever_ 找到。
 
 .. _receive_message_forever: https://github.com/uPtt-messenger/backend/blob/develop/src/mq.py#L41-L62
 
