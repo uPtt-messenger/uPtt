@@ -50,7 +50,7 @@
 <li><p>Login window: 用於用戶登入批踢踢帳號的界面。</p></li>
 </ul>
 <div class="line-block">
-<div class="line">這是目前的專案架構。</div>
+<div class="line">這是目前的專案架構。五個元件分散在 <a class="reference external" href="https://github.com/uPtt-messenger/frontend">frontend</a> 和 <a class="reference external" href="https://github.com/uPtt-messenger/backend">backend</a> 兩個 repo 中，但未來希望可以各自獨立成一個 repo 管理。</div>
 </div>
 <figure class="align-center" id="repo-structure">
 <div class="graphviz"><object data="../_images/graphviz-dfa7ebf4260501fcd11b76663b007c6580fde3ee.svg" type="image/svg+xml" class="graphviz">
@@ -60,7 +60,7 @@
 </figcaption>
 </figure>
 <div class="line-block">
-<div class="line">未來希望可以朝這個方向前進。</div>
+<div class="line">未來希望可以朝每個元件都獨立管理的方向前進。</div>
 </div>
 <figure class="align-center" id="new-repo-structure">
 <div class="graphviz"><object data="../_images/graphviz-2d6f11ad446fedb55a42adc840f581bdc7d4bca6.svg" type="image/svg+xml" class="graphviz">
@@ -94,7 +94,10 @@
 <p><span class="caption-text">Message queue structure</span><a class="headerlink" href="#message-queue-structure" title="連結到這個圖片">¶</a></p>
 </figcaption>
 </figure>
-<p>所有元件之間都是透過 Message queue 來互相溝通的。</p>
+<div class="line-block">
+<div class="line">目前 Message queue server 是自行開發的簡單實作，使用了 <a class="reference external" href="https://fastapi.tiangolo.com/">FastAPI</a> 作為 web framework。</div>
+<div class="line">其中有實作了 long polling 機制，所以元件的 API 呼叫可以不用設置時間間隔。</div>
+</div>
 <section id="id3">
 <h3>發送訊息<a class="headerlink" href="#id3" title="連結到這個標頭">¶</a></h3>
 <div class="line-block">
@@ -133,7 +136,7 @@
         <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>實際用來收信的程式碼你可以在 <a class="reference external" href="https://github.com/uPtt-messenger/backend/blob/develop/src/mq.py#L41-L62">receive_message_forever</a> 找到。</p>
+<p>實際用來接收訊息的程式碼你可以在 <a class="reference external" href="https://github.com/uPtt-messenger/backend/blob/develop/src/mq.py#L41-L62">receive_message_forever</a> 找到。</p>
 <p>那實際收到的訊息都會是以矩陣的形式並按照時間排序。</p>
 </section>
 </section>
