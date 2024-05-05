@@ -3,67 +3,43 @@ name: build-docs
 on:
   pull_request:
     types: [ closed ]
-    branches:
-      - main
-      - staging
-      - develop
   workflow_dispatch:
 
 jobs:
   build:
     name: Build doc and Deploy
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/setup-python@v5
-        with:
+    - uses: actions/setup-python@v5
+      with:
           python-version: 3.11
+          
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Generate requirements.txt
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry poetry-plugin-export
+        poetry export -f requirements.txt --output docs/requirements.txt
 
-      - name: Generate requirements.txt
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry poetry-plugin-export
-          poetry export -f requirements.txt --output docs/requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r docs/requirements.txt
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r docs/requirements.txt
+    - name: Install graphviz
+      run: |
+        sudo apt-get install graphviz
 
-      - name: Install graphviz
-        run: |
-          sudo apt-get install graphviz
+    - name: Build and Commit
+      uses: sphinx-notes/pages@v2
+      with:
+        requirements_path: docs/requirements.txt
 
-      - name: Build and Commit
-        uses: sphinx-notes/pages@v2
-        with:
-          requirements_path: docs/requirements.txt
-
-      - name: Push changes to main branch
-        if: github.ref == 'refs/heads/main'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          branch: gh-pages
-
-      - name: Push changes to develop branch
-        if: github.ref == 'refs/heads/develop'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          branch: gh-pages
-          directory: docs/_build/html
-          destination_dir: develop
-
-      - name: Push changes to staging branch
-        if: github.ref == 'refs/heads/staging'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          branch: gh-pages
-          directory: docs/_build/html
-          destination_dir: staging
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+        branch: gh-pages
