@@ -56,7 +56,8 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
-          directory: develop
+          directory: docs/_build/html
+          destination_dir: develop
 
       - name: Push changes to staging branch
         if: github.ref == 'refs/heads/staging'
@@ -64,4 +65,5 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
-          directory: staging
+          directory: docs/_build/html
+          destination_dir: staging
