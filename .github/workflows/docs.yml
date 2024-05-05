@@ -38,6 +38,19 @@ jobs:
       with:
         requirements_path: docs/requirements.txt
 
+    - name: Deploy to branch directory
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          mkdir -p gh-pages
+          mv docs/_build/html/* gh-pages/
+        elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+          mkdir -p gh-pages/develop
+          mv docs/_build/html/* gh-pages/develop/
+        elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+          mkdir -p gh-pages/staging  
+          mv docs/_build/html/* gh-pages/staging/
+        fi
+
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
