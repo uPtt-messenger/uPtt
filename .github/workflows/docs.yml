@@ -1,4 +1,4 @@
-name: docs
+name: build-docs
 
 on:
   pull_request:
@@ -56,7 +56,7 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
-          destination_dir: develop
+          directory: develop
 
       - name: Push changes to staging branch
         if: github.ref == 'refs/heads/staging'
@@ -64,4 +64,4 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
-          destination_dir: staging
+          directory: staging
