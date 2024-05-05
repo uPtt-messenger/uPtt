@@ -41,14 +41,17 @@ jobs:
     - name: Deploy to branch directory
       run: |
         if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "Executing on main branch"
           mkdir -p gh-pages
-          mv docs/_build/html/* gh-pages/
+          cp -r docs/_build/html/* gh-pages/
         elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+          echo "Executing on develop branch"
           mkdir -p gh-pages/develop
-          mv docs/_build/html/* gh-pages/develop/
+          cp -r docs/_build/html/* gh-pages/develop/
         elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
-          mkdir -p gh-pages/staging  
-          mv docs/_build/html/* gh-pages/staging/
+          echo "Executing on staging branch"
+          mkdir -p gh-pages/staging
+          cp -r docs/_build/html/* gh-pages/staging/
         fi
 
     - name: Push changes
