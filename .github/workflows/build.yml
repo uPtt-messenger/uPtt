@@ -36,7 +36,7 @@ jobs:
         id: cache-backend-build
         with:
           path: backend/build-packages
-          key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/src/*.py') }}-${{ hashFiles('backend/poetry.lock') }}
+          key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/src/**') }}
           restore-keys: |
             ${{ runner.os }}-backend-build-
 
@@ -78,11 +78,11 @@ jobs:
           cp -r installer/uPtt.app .
           cp -r backend/build-packages/* uPtt.app/Contents/MacOS
           ls -lR uPtt.app
-          zip -r uPtt.zip uPtt.app
+          zip -r uPtt-MacOS.zip uPtt.app
 
       - name: Upload artifact
         if: ${{ matrix.os }} == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: uPtt
-          path: uPtt.zip
+          name: uPtt-MacOS
+          path: uPtt-MacOS.zip
