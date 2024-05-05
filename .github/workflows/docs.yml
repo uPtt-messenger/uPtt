@@ -34,25 +34,9 @@ jobs:
         sudo apt-get install graphviz
 
     - name: Build and Commit
-      uses: sphinx-notes/pages@v2
+      uses: sphinx-notes/pages@v3
       with:
         requirements_path: docs/requirements.txt
-
-    - name: Deploy to branch directory
-      run: |
-        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-          echo "Executing on main branch"
-          mkdir -p gh-pages
-          cp -r docs/_build/html/* gh-pages/
-        elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-          echo "Executing on develop branch"
-          mkdir -p docs/_build/html/develop
-          cp -r docs/_build/html/* docs/_build/html/develop/
-        elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
-          echo "Executing on staging branch"
-          mkdir -p docs/_build/html/staging
-          cp -r docs/_build/html/* docs/_build/html/staging/
-        fi
 
     - name: Push changes
       uses: ad-m/github-push-action@master
