@@ -36,7 +36,7 @@ jobs:
         id: cache-backend-build
         with:
           path: backend/build-packages
-          key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/src/**') }}
+          key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/**') }}
           restore-keys: |
             ${{ runner.os }}-backend-build-
 
