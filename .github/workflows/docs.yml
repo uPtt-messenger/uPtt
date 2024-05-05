@@ -46,12 +46,12 @@ jobs:
           cp -r docs/_build/html/* gh-pages/
         elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
           echo "Executing on develop branch"
-          mkdir -p gh-pages/develop
-          cp -r docs/_build/html/* gh-pages/develop/
+          mkdir -p docs/_build/html/develop
+          cp -r docs/_build/html/* docs/_build/html/develop/
         elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
           echo "Executing on staging branch"
-          mkdir -p gh-pages/staging
-          cp -r docs/_build/html/* gh-pages/staging/
+          mkdir -p docs/_build/html/staging
+          cp -r docs/_build/html/* docs/_build/html/staging/
         fi
 
     - name: Push changes
