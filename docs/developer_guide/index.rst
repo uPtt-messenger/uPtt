@@ -110,7 +110,7 @@ Message queue
 
 採用 Message queue 架構是為了實現元件之間的非同步通訊並帶來以下優勢：
 
-* 技術堆疊靈活：不同元件之間可以自由採用不同的技術堆疊，如程式語言、框架、資料庫等。
+* 技術堆疊靈活：不同元件之間可以自由採用不同的技術堆疊，如程式語言、框架等。
 * 方便替換：同一個功能的元件，可以由不同開發者各自開發，當目前採用的開發者無法持續開發時，可由熟悉不同技術的開發者開發功能相同的元件。
 
 .. graphviz::
@@ -123,17 +123,64 @@ Message queue
 
         "Message Queue" [shape=rect, style=filled, width=6.5];
 
-        "PTT backend" -> "Message Queue";
-        "MQ server" -> "Message Queue";
-        "system tray" -> "Message Queue";
-        "login window" -> "Message Queue";
-        "chat window" -> "Message Queue";
+        PTT_backend [label="PTT\nbackend", style=filled, color=palegreen];
+        MQ_server [label="MQ\nserver", style=filled, color=khaki];
+        system_tray [label="system\ntray", style=filled, color=lightskyblue];
+        chat_window [label="chat\nwindow", style=filled, color=sandybrown];
+        login_window [label="login\nwindow", style=filled, color=lightpink];
+
+        PTT_backend -> "Message Queue";
+        MQ_server -> "Message Queue";
+        system_tray -> "Message Queue";
+        login_window -> "Message Queue";
+        chat_window -> "Message Queue";
     }
 
 | 目前 Message queue server 是自行開發的簡單實作，使用了 FastAPI_ 作為 web framework。
 | 其中有實作了 long polling 機制，所以元件的 API 呼叫可以不用設置時間間隔。
 
 .. _FastAPI: https://fastapi.tiangolo.com/
+
+Channels
+-----------
+
+| Channels 是用來區分不同元件之間的通訊頻道，每個元件都需要訂閱自己的 channel 以接收別的元件傳送過來的訊息，並且可以藉由發送訊息到指定的 channel 來傳送訊息給其他元件。
+
+.. graphviz::
+    :name: Channels
+    :caption: Channels
+    :align: center
+
+    digraph Channels {
+        node [shape=box, style=rounded];
+
+        "PTT backend" [label="PTT\nbackend", style=filled, color=palegreen];
+        "MQ server" [label="MQ\nserver", style=filled, color=khaki];
+        "system tray" [label="system\ntray", style=filled, color=lightskyblue];
+        "chat window" [label="chat\nwindow", style=filled, color=sandybrown];
+        "login window" [label="login\nwindow", style=filled, color=lightpink];
+
+        "to_ptt_backend" [label="to_ptt_backend", shape=rect, style=filled, color=palegreen];
+        "to_mq_server" [label="to_mq_server", shape=rect, style=filled, color=khaki];
+        "to_system_tray" [label="to_system_tray", shape=rect, style=filled, color=lightskyblue];
+        "to_chat_window" [label="to_chat_window", shape=rect, style=filled, color=sandybrown];
+        "to_login_window" [label="to_login_window", shape=rect, style=filled, color=lightpink];
+
+        "Message Queue" [shape=circle, style=filled, width=2, fillcolor=lightgray];
+
+        "PTT backend" -> "to_ptt_backend" [dir=back];
+        "MQ server" -> "to_mq_server" [dir=back];
+        "system tray" -> "to_system_tray" [dir=back];
+        "login window" -> "to_login_window" [dir=back];
+        "chat window" -> "to_chat_window" [dir=back];
+
+        "to_ptt_backend" -> "Message Queue" [dir=both];
+        "to_mq_server" -> "Message Queue" [dir=both];
+        "to_system_tray" -> "Message Queue" [dir=both];
+        "to_login_window" -> "Message Queue" [dir=both];
+        "to_chat_window" -> "Message Queue" [dir=both];
+    }
+
 
 發送訊息
 ^^^^^^^^
@@ -233,3 +280,17 @@ Message queue
     }
 
 至此，整個登入流程就算完成了。
+
+登出
+^^^^^^^
+
+如果成功登入了，那麼登出的流程就會是這樣。
+
+1. 使用者在點選登出後，UI 發送登出訊息給 PTT backend，請求執行登出操作。
+
+.. code-block:: json
+
+    {
+        "channel": "to_backend",
+        "message": "{\"category\": \"logout\", \"reply_channel\": \"to_ui\"}"
+    }
