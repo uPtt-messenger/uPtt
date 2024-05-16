@@ -74,21 +74,27 @@
 <h2>Message queue<a class="headerlink" href="#message-queue" title="連結到這個標頭">¶</a></h2>
 <p>採用 Message queue 架構是為了實現元件之間的非同步通訊並帶來以下優勢：</p>
 <ul class="simple">
-<li><p>技術堆疊靈活：不同元件之間可以自由採用不同的技術堆疊，如程式語言、框架、資料庫等。</p></li>
+<li><p>技術堆疊靈活：不同元件之間可以自由採用不同的技術堆疊，如程式語言、框架等。</p></li>
 <li><p>方便替換：同一個功能的元件，可以由不同開發者各自開發，當目前採用的開發者無法持續開發時，可由熟悉不同技術的開發者開發功能相同的元件。</p></li>
 </ul>
 <figure class="align-center" id="message-queue-structure">
-<div class="graphviz"><object data="../_images/graphviz-d53f98a30125881bc53f33c14db9f53a96f69985.svg" type="image/svg+xml" class="graphviz">
+<div class="graphviz"><object data="../_images/graphviz-d45f222514e36b62f67d28a7e938221c47427eda.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph Architecture {
     node [shape=box, style=rounded];
 
     &quot;Message Queue&quot; [shape=rect, style=filled, width=6.5];
 
-    &quot;PTT backend&quot; -&gt; &quot;Message Queue&quot;;
-    &quot;MQ server&quot; -&gt; &quot;Message Queue&quot;;
-    &quot;system tray&quot; -&gt; &quot;Message Queue&quot;;
-    &quot;login window&quot; -&gt; &quot;Message Queue&quot;;
-    &quot;chat window&quot; -&gt; &quot;Message Queue&quot;;
+    PTT_backend [label=&quot;PTT\nbackend&quot;, style=filled, color=palegreen];
+    MQ_server [label=&quot;MQ\nserver&quot;, style=filled, color=khaki];
+    system_tray [label=&quot;system\ntray&quot;, style=filled, color=lightskyblue];
+    chat_window [label=&quot;chat\nwindow&quot;, style=filled, color=sandybrown];
+    login_window [label=&quot;login\nwindow&quot;, style=filled, color=lightpink];
+
+    PTT_backend -&gt; &quot;Message Queue&quot;;
+    MQ_server -&gt; &quot;Message Queue&quot;;
+    system_tray -&gt; &quot;Message Queue&quot;;
+    login_window -&gt; &quot;Message Queue&quot;;
+    chat_window -&gt; &quot;Message Queue&quot;;
 }</p></object></div>
 <figcaption>
 <p><span class="caption-text">Message queue structure</span><a class="headerlink" href="#message-queue-structure" title="連結到這個圖片">¶</a></p>
@@ -98,8 +104,49 @@
 <div class="line">目前 Message queue server 是自行開發的簡單實作，使用了 <a class="reference external" href="https://fastapi.tiangolo.com/">FastAPI</a> 作為 web framework。</div>
 <div class="line">其中有實作了 long polling 機制，所以元件的 API 呼叫可以不用設置時間間隔。</div>
 </div>
-<section id="id3">
-<h3>發送訊息<a class="headerlink" href="#id3" title="連結到這個標頭">¶</a></h3>
+</section>
+<section id="channels">
+<h2>Channels<a class="headerlink" href="#channels" title="連結到這個標頭">¶</a></h2>
+<div class="line-block">
+<div class="line">Channels 是用來區分不同元件之間的通訊頻道，每個元件都需要訂閱自己的 channel 以接收別的元件傳送過來的訊息，並且可以藉由發送訊息到指定的 channel 來傳送訊息給其他元件。</div>
+</div>
+<figure class="align-center" id="id3">
+<div class="graphviz"><object data="../_images/graphviz-bdfc1c03cfee0e7a3c81a89fc5d826eeb70b1ae7.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph Channels {
+    node [shape=box, style=rounded];
+
+    &quot;PTT backend&quot; [label=&quot;PTT\nbackend&quot;, style=filled, color=palegreen];
+    &quot;MQ server&quot; [label=&quot;MQ\nserver&quot;, style=filled, color=khaki];
+    &quot;system tray&quot; [label=&quot;system\ntray&quot;, style=filled, color=lightskyblue];
+    &quot;chat window&quot; [label=&quot;chat\nwindow&quot;, style=filled, color=sandybrown];
+    &quot;login window&quot; [label=&quot;login\nwindow&quot;, style=filled, color=lightpink];
+
+    &quot;to_ptt_backend&quot; [label=&quot;to_ptt_backend&quot;, shape=rect, style=filled, color=palegreen];
+    &quot;to_mq_server&quot; [label=&quot;to_mq_server&quot;, shape=rect, style=filled, color=khaki];
+    &quot;to_system_tray&quot; [label=&quot;to_system_tray&quot;, shape=rect, style=filled, color=lightskyblue];
+    &quot;to_chat_window&quot; [label=&quot;to_chat_window&quot;, shape=rect, style=filled, color=sandybrown];
+    &quot;to_login_window&quot; [label=&quot;to_login_window&quot;, shape=rect, style=filled, color=lightpink];
+
+    &quot;Message Queue&quot; [shape=circle, style=filled, width=2, fillcolor=lightgray];
+
+    &quot;PTT backend&quot; -&gt; &quot;to_ptt_backend&quot; [dir=back];
+    &quot;MQ server&quot; -&gt; &quot;to_mq_server&quot; [dir=back];
+    &quot;system tray&quot; -&gt; &quot;to_system_tray&quot; [dir=back];
+    &quot;login window&quot; -&gt; &quot;to_login_window&quot; [dir=back];
+    &quot;chat window&quot; -&gt; &quot;to_chat_window&quot; [dir=back];
+
+    &quot;to_ptt_backend&quot; -&gt; &quot;Message Queue&quot; [dir=both];
+    &quot;to_mq_server&quot; -&gt; &quot;Message Queue&quot; [dir=both];
+    &quot;to_system_tray&quot; -&gt; &quot;Message Queue&quot; [dir=both];
+    &quot;to_login_window&quot; -&gt; &quot;Message Queue&quot; [dir=both];
+    &quot;to_chat_window&quot; -&gt; &quot;Message Queue&quot; [dir=both];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">Channels</span><a class="headerlink" href="#id3" title="連結到這個圖片">¶</a></p>
+</figcaption>
+</figure>
+<section id="id4">
+<h3>發送訊息<a class="headerlink" href="#id4" title="連結到這個標頭">¶</a></h3>
 <div class="line-block">
 <div class="line">以下是發送訊息的示範程式。</div>
 <div class="line">先介紹一下發送訊息的基本格式。</div>
@@ -117,8 +164,8 @@
 </pre></div>
 </div>
 </section>
-<section id="id4">
-<h3>接收訊息<a class="headerlink" href="#id4" title="連結到這個標頭">¶</a></h3>
+<section id="id5">
+<h3>接收訊息<a class="headerlink" href="#id5" title="連結到這個標頭">¶</a></h3>
 <div class="line-block">
 <div class="line">以下是收取訊息的示範程式。</div>
 <div class="line">其中 timeout 是 5 + 1 秒是因為 long polling 目前設定在 5 秒，所以 request timeout 時間才會設定在 5 + 1 秒。</div>
@@ -140,10 +187,10 @@
 <p>那實際收到的訊息都會是以矩陣的形式並按照時間排序。</p>
 </section>
 </section>
-<section id="id5">
-<h2>程式碼流程<a class="headerlink" href="#id5" title="連結到這個標頭">¶</a></h2>
 <section id="id6">
-<h3>登入<a class="headerlink" href="#id6" title="連結到這個標頭">¶</a></h3>
+<h2>程式碼流程<a class="headerlink" href="#id6" title="連結到這個標頭">¶</a></h2>
+<section id="id7">
+<h3>登入<a class="headerlink" href="#id7" title="連結到這個標頭">¶</a></h3>
 <p>這裡將描述登入溝通的過程。</p>
 <ol class="arabic simple">
 <li><p>使用者在 Login Window 輸入批踢踢帳號和密碼後，Login Window 將透過 Message queue server 發送登入訊息給 PTT backend，請求執行登入操作。</p></li>
@@ -184,6 +231,19 @@
 </div>
 <p>至此，整個登入流程就算完成了。</p>
 </section>
+<section id="id8">
+<h3>登出<a class="headerlink" href="#id8" title="連結到這個標頭">¶</a></h3>
+<p>如果成功登入了，那麼登出的流程就會是這樣。</p>
+<ol class="arabic simple">
+<li><p>使用者在點選登出後，UI 發送登出訊息給 PTT backend，請求執行登出操作。</p></li>
+</ol>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;to_backend&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;category\&quot;: \&quot;logout\&quot;, \&quot;reply_channel\&quot;: \&quot;to_ui\&quot;}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 
@@ -209,7 +269,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">開發者指南</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id2">專案架構</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#message-queue">Message queue</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">程式碼流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#channels">Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">程式碼流程</a></li>
 </ul>
 </li>
 </ul>
