@@ -99,6 +99,7 @@ jobs:
         working-directory: frontend
         run: |
           npm install
+          npm i pnpm --global
 
       - name: Build frontend
         if: steps.cache-frontend-build.outputs.cache-hit != 'true'
