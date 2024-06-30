@@ -35,7 +35,7 @@ jobs:
         uses: actions/cache@v4
         id: cache-backend-build
         with:
-          path: backend/build-packages
+          path: build-packages-backend
           key: ${{ runner.os }}-backend-build-${{ hashFiles('backend/**') }}
           restore-keys: |
             ${{ runner.os }}-backend-build-
@@ -71,6 +71,8 @@ jobs:
           else
               ./build.bat build
           fi
+          
+          mv build-packages ../build-packages-backend
 
       - uses: actions/checkout@v4
         with:
@@ -82,7 +84,7 @@ jobs:
         uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-frontend-build-${{ hashFiles('frontend/**') }}
-          path: frontend/build
+          path: build-packages-frontend
           restore-keys: |
               ${{ runner.os }}-frontend-build-
 
@@ -102,13 +104,18 @@ jobs:
         if: steps.cache-frontend-build.outputs.cache-hit != 'true'
         working-directory: frontend
         run: |
-          bash build.sh
+          bash build.sh build
+          
+          mv build ../frontend/build-packages
 
       - name: Build app
         if: ${{ matrix.os }} == 'macos-latest'
         run: |
           cp -r installer/uPtt.app .
-          cp -r backend/build-packages/* uPtt.app/Contents/MacOS
+          
+          cp -r build-packages-backend/* uPtt.app/Contents/MacOS
+          cp -r build-packages-frontend/* uPtt.app/Contents/MacOS
+          
           ls -lR uPtt.app
           zip -r uPtt-MacOS.zip uPtt.app
 
