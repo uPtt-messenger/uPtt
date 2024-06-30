@@ -25,4 +25,5 @@ uPtt - 為批踢踢打造的開源即時通訊軟體
    :hidden:
 
    開發者指南 <developer_guide/index>
+   常見問題 <faq/index>
 
